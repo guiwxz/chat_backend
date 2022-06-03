@@ -1,4 +1,5 @@
 import MessagesController from '../controllers/MessagesController.js';
+import WatchingController from '../controllers/WatchingController.js';
 
 const Connection = (io) => {
   io.on('connection', socket => {
@@ -42,8 +43,16 @@ const Connection = (io) => {
         //setInterval(() => socket.emit('FromAPI', obj), 1000);
     });
 
+    socket.on('editEpCounter', async ({ codigo, new_ep }) => {
+      console.log("data", codigo, new_ep);
+      WatchingController.editCounterWithSocket(
+        { codigo, new_ep }, 
+        { status: 200, message: 'Counter edited successfully' }
+      );
+    })
+
     
-});
+  });
 }
 
 
