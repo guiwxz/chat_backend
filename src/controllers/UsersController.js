@@ -7,7 +7,7 @@ class UsersController {
     return client.query(`
       SELECT codigo 
       FROM users 
-      WHERE nickname = '${nickname}' AND senha = '${senha}'
+      WHERE username = '${nickname}' AND senha = '${senha}'
     `, 
     (err, result) => {
       if (err) {
@@ -35,6 +35,43 @@ class UsersController {
       }
     )
   };
+
+  store = (request, response) => {
+    console.log(request);
+    const { username, password } = request.params;
+
+    const encryptedPassword = '';
+
+    return client.query(`
+      INSERT INTO users (username, password, date) 
+      VALUES ('${username}', '${encryptedPassword}', CURRENT_TIMESTAMP(2))
+      RETURNING *
+    `, 
+      (err, results) => {
+        if (err) {
+          console.log('erro', err);
+          return;
+        }
+        return response.json(results.rows[0]);
+      }
+    )
+  };
+
+  update = (request, response) => {
+    const { id } = request.params;
+    const { nickname } = request.body;
+    return client.query(
+      `UPDATE users SET nickname = '${nickname}' WHERE codigo = '${id}' RETURNING *`,
+      (err, results) => {
+        if (err) {
+          console.log('erro', err);
+          return;
+        }
+        console.log(response.message, '=', results.rows);
+        return response.json(results.rows[0]);
+      }
+    )
+  }
 
   
 }
